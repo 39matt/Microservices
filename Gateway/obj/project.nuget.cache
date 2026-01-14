@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "9PIkK9V1nDI=",
+  "success": true,
+  "projectFilePath": "/Users/matija/Faks/IoTS/Microservices/Gateway/Gateway.csproj",
+  "expectedPackageFiles": [
+    "/Users/matija/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0-rc.1.25451.107/microsoft.aspnetcore.openapi.10.0.0-rc.1.25451.107.nupkg.sha512",
+    "/Users/matija/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

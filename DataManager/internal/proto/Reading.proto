@@ -4,7 +4,7 @@ option go_package = "./pb";
 service ReadingService {
   rpc GetAllReadings(Empty) returns (GetAllReadingsResponse) {}
   rpc GetReading(GetReadingRequest) returns (Reading) {}
-  rpc AddReading(AddReadingRequest) returns (Empty) {}
+  rpc CreateReading(CreateReadingRequest) returns (CreateReadingResponse) {}
   rpc RemoveReading(RemoveReadingRequest) returns (Empty) {}
   rpc UpdateReading(UpdateReadingRequest) returns (Empty) {}
 }
@@ -30,8 +30,11 @@ message GetReadingRequest {
   string id = 1;
 }
 
-message AddReadingRequest {
+message CreateReadingRequest {
   Reading reading = 1;
+}
+message CreateReadingResponse {
+  int32 id = 1;
 }
 
 message RemoveReadingRequest {

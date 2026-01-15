@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ReadingService_GetAllReadings_FullMethodName = "/ReadingService/GetAllReadings"
 	ReadingService_GetReading_FullMethodName     = "/ReadingService/GetReading"
-	ReadingService_AddReading_FullMethodName     = "/ReadingService/AddReading"
+	ReadingService_CreateReading_FullMethodName  = "/ReadingService/CreateReading"
 	ReadingService_RemoveReading_FullMethodName  = "/ReadingService/RemoveReading"
 	ReadingService_UpdateReading_FullMethodName  = "/ReadingService/UpdateReading"
 )
@@ -32,7 +32,7 @@ const (
 type ReadingServiceClient interface {
 	GetAllReadings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetAllReadingsResponse, error)
 	GetReading(ctx context.Context, in *GetReadingRequest, opts ...grpc.CallOption) (*Reading, error)
-	AddReading(ctx context.Context, in *AddReadingRequest, opts ...grpc.CallOption) (*Empty, error)
+	CreateReading(ctx context.Context, in *CreateReadingRequest, opts ...grpc.CallOption) (*CreateReadingResponse, error)
 	RemoveReading(ctx context.Context, in *RemoveReadingRequest, opts ...grpc.CallOption) (*Empty, error)
 	UpdateReading(ctx context.Context, in *UpdateReadingRequest, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -65,10 +65,10 @@ func (c *readingServiceClient) GetReading(ctx context.Context, in *GetReadingReq
 	return out, nil
 }
 
-func (c *readingServiceClient) AddReading(ctx context.Context, in *AddReadingRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *readingServiceClient) CreateReading(ctx context.Context, in *CreateReadingRequest, opts ...grpc.CallOption) (*CreateReadingResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, ReadingService_AddReading_FullMethodName, in, out, cOpts...)
+	out := new(CreateReadingResponse)
+	err := c.cc.Invoke(ctx, ReadingService_CreateReading_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (c *readingServiceClient) UpdateReading(ctx context.Context, in *UpdateRead
 type ReadingServiceServer interface {
 	GetAllReadings(context.Context, *Empty) (*GetAllReadingsResponse, error)
 	GetReading(context.Context, *GetReadingRequest) (*Reading, error)
-	AddReading(context.Context, *AddReadingRequest) (*Empty, error)
+	CreateReading(context.Context, *CreateReadingRequest) (*CreateReadingResponse, error)
 	RemoveReading(context.Context, *RemoveReadingRequest) (*Empty, error)
 	UpdateReading(context.Context, *UpdateReadingRequest) (*Empty, error)
 	mustEmbedUnimplementedReadingServiceServer()
@@ -120,8 +120,8 @@ func (UnimplementedReadingServiceServer) GetAllReadings(context.Context, *Empty)
 func (UnimplementedReadingServiceServer) GetReading(context.Context, *GetReadingRequest) (*Reading, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetReading not implemented")
 }
-func (UnimplementedReadingServiceServer) AddReading(context.Context, *AddReadingRequest) (*Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method AddReading not implemented")
+func (UnimplementedReadingServiceServer) CreateReading(context.Context, *CreateReadingRequest) (*CreateReadingResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateReading not implemented")
 }
 func (UnimplementedReadingServiceServer) RemoveReading(context.Context, *RemoveReadingRequest) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveReading not implemented")
@@ -186,20 +186,20 @@ func _ReadingService_GetReading_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReadingService_AddReading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddReadingRequest)
+func _ReadingService_CreateReading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateReadingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReadingServiceServer).AddReading(ctx, in)
+		return srv.(ReadingServiceServer).CreateReading(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReadingService_AddReading_FullMethodName,
+		FullMethod: ReadingService_CreateReading_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReadingServiceServer).AddReading(ctx, req.(*AddReadingRequest))
+		return srv.(ReadingServiceServer).CreateReading(ctx, req.(*CreateReadingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -256,8 +256,8 @@ var ReadingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ReadingService_GetReading_Handler,
 		},
 		{
-			MethodName: "AddReading",
-			Handler:    _ReadingService_AddReading_Handler,
+			MethodName: "CreateReading",
+			Handler:    _ReadingService_CreateReading_Handler,
 		},
 		{
 			MethodName: "RemoveReading",

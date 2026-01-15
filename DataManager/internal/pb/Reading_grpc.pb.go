@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ReadingService_GetReading_FullMethodName    = "/ReadingService/GetReading"
-	ReadingService_AddReading_FullMethodName    = "/ReadingService/AddReading"
-	ReadingService_RemoveReading_FullMethodName = "/ReadingService/RemoveReading"
-	ReadingService_UpdateReading_FullMethodName = "/ReadingService/UpdateReading"
+	ReadingService_GetAllReadings_FullMethodName = "/ReadingService/GetAllReadings"
+	ReadingService_GetReading_FullMethodName     = "/ReadingService/GetReading"
+	ReadingService_AddReading_FullMethodName     = "/ReadingService/AddReading"
+	ReadingService_RemoveReading_FullMethodName  = "/ReadingService/RemoveReading"
+	ReadingService_UpdateReading_FullMethodName  = "/ReadingService/UpdateReading"
 )
 
 // ReadingServiceClient is the client API for ReadingService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReadingServiceClient interface {
+	GetAllReadings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetAllReadingsResponse, error)
 	GetReading(ctx context.Context, in *GetReadingRequest, opts ...grpc.CallOption) (*Reading, error)
 	AddReading(ctx context.Context, in *AddReadingRequest, opts ...grpc.CallOption) (*Empty, error)
 	RemoveReading(ctx context.Context, in *RemoveReadingRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -41,6 +43,16 @@ type readingServiceClient struct {
 
 func NewReadingServiceClient(cc grpc.ClientConnInterface) ReadingServiceClient {
 	return &readingServiceClient{cc}
+}
+
+func (c *readingServiceClient) GetAllReadings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetAllReadingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllReadingsResponse)
+	err := c.cc.Invoke(ctx, ReadingService_GetAllReadings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *readingServiceClient) GetReading(ctx context.Context, in *GetReadingRequest, opts ...grpc.CallOption) (*Reading, error) {
@@ -87,6 +99,7 @@ func (c *readingServiceClient) UpdateReading(ctx context.Context, in *UpdateRead
 // All implementations must embed UnimplementedReadingServiceServer
 // for forward compatibility.
 type ReadingServiceServer interface {
+	GetAllReadings(context.Context, *Empty) (*GetAllReadingsResponse, error)
 	GetReading(context.Context, *GetReadingRequest) (*Reading, error)
 	AddReading(context.Context, *AddReadingRequest) (*Empty, error)
 	RemoveReading(context.Context, *RemoveReadingRequest) (*Empty, error)
@@ -101,6 +114,9 @@ type ReadingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedReadingServiceServer struct{}
 
+func (UnimplementedReadingServiceServer) GetAllReadings(context.Context, *Empty) (*GetAllReadingsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllReadings not implemented")
+}
 func (UnimplementedReadingServiceServer) GetReading(context.Context, *GetReadingRequest) (*Reading, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetReading not implemented")
 }
@@ -132,6 +148,24 @@ func RegisterReadingServiceServer(s grpc.ServiceRegistrar, srv ReadingServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ReadingService_ServiceDesc, srv)
+}
+
+func _ReadingService_GetAllReadings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReadingServiceServer).GetAllReadings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReadingService_GetAllReadings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReadingServiceServer).GetAllReadings(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ReadingService_GetReading_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -213,6 +247,10 @@ var ReadingService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ReadingService",
 	HandlerType: (*ReadingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetAllReadings",
+			Handler:    _ReadingService_GetAllReadings_Handler,
+		},
 		{
 			MethodName: "GetReading",
 			Handler:    _ReadingService_GetReading_Handler,

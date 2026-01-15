@@ -2,6 +2,7 @@ syntax = "proto3";
 option go_package = "./pb";
 
 service ReadingService {
+  rpc GetAllReadings(Empty) returns (GetAllReadingsResponse) {}
   rpc GetReading(GetReadingRequest) returns (Reading) {}
   rpc AddReading(AddReadingRequest) returns (Empty) {}
   rpc RemoveReading(RemoveReadingRequest) returns (Empty) {}
@@ -18,6 +19,10 @@ message Reading {
   bool motion = 7;
   double smoke = 8;
   float temperature = 9;
+}
+
+message GetAllReadingsResponse {
+  repeated Reading readings = 1;
 }
 
 message GetReadingRequest {

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"DataManager/internal/database"
 	"DataManager/internal/pb"
 	"context"
 	"database/sql"
@@ -21,7 +20,7 @@ func (s *ReadingService) GetAllReadings(ctx context.Context) (*pb.GetAllReadings
 	var query = `SELECT id, timestamp, device_id, co, 
     			humidity, light, lpg, motion, smoke, temperature  
 				FROM readings`
-	rows, err := database.DB.QueryContext(ctx, query)
+	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}

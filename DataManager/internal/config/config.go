@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -17,4 +16,5 @@ func Init() error {
 	}
 
 	PostgresUrl = os.Getenv("POSTGRES_URL")
+	return nil
 }

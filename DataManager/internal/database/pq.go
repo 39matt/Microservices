@@ -19,17 +19,13 @@ func InitPostgres() error {
 	}
 
 	var err error
-	db, err = sql.Open("postgres", connStr)
+	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
 		return fmt.Errorf("could not connect to postgres: %v", err)
 
 	}
-	defer func() {
-		if err = db.Close(); err != nil {
-		}
-	}()
 
-	err = db.Ping()
+	err = DB.Ping()
 	if err != nil {
 		return fmt.Errorf("could not ping postgres: %v", err)
 	}

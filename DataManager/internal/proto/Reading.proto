@@ -1,0 +1,40 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+service ReadingService {
+  rpc GetReading(GetReadingRequest) returns (Reading) {}
+  rpc AddReading(AddReadingRequest) returns (Empty) {}
+  rpc RemoveReading(RemoveReadingRequest) returns (Empty) {}
+  rpc UpdateReading(UpdateReadingRequest) returns (Empty) {}
+}
+
+message Reading {
+  string timestamp = 1;
+  string device_id = 2;
+  double co = 3;
+  float humidity = 4;
+  bool light = 5;
+  double lpg = 6;
+  bool motion = 7;
+  double smoke = 8;
+  float temperature = 9;
+}
+
+message GetReadingRequest {
+  string id = 1;
+}
+
+message AddReadingRequest {
+  Reading reading = 1;
+}
+
+message RemoveReadingRequest {
+  string id = 1;
+}
+
+message UpdateReadingRequest {
+  string id = 1;
+  Reading reading = 2;
+}
+
+message Empty {}

@@ -10,15 +10,16 @@ service ReadingService {
 }
 
 message Reading {
-  string timestamp = 1;
-  string device_id = 2;
-  double co = 3;
-  float humidity = 4;
-  bool light = 5;
-  double lpg = 6;
-  bool motion = 7;
-  double smoke = 8;
-  float temperature = 9;
+  string id = 1;
+  string timestamp = 2;
+  string device_id = 3;
+  double co = 4;
+  float humidity = 5;
+  bool light = 6;
+  double lpg = 7;
+  bool motion = 8;
+  double smoke = 9;
+  float temperature = 10;
 }
 
 message GetAllReadingsResponse {

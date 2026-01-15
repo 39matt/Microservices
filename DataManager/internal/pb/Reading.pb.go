@@ -23,15 +23,16 @@ const (
 
 type Reading struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Timestamp     string                 `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	DeviceId      string                 `protobuf:"bytes,2,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
-	Co            float64                `protobuf:"fixed64,3,opt,name=co,proto3" json:"co,omitempty"`
-	Humidity      float32                `protobuf:"fixed32,4,opt,name=humidity,proto3" json:"humidity,omitempty"`
-	Light         bool                   `protobuf:"varint,5,opt,name=light,proto3" json:"light,omitempty"`
-	Lpg           float64                `protobuf:"fixed64,6,opt,name=lpg,proto3" json:"lpg,omitempty"`
-	Motion        bool                   `protobuf:"varint,7,opt,name=motion,proto3" json:"motion,omitempty"`
-	Smoke         float64                `protobuf:"fixed64,8,opt,name=smoke,proto3" json:"smoke,omitempty"`
-	Temperature   float32                `protobuf:"fixed32,9,opt,name=temperature,proto3" json:"temperature,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Timestamp     string                 `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	DeviceId      string                 `protobuf:"bytes,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	Co            float64                `protobuf:"fixed64,4,opt,name=co,proto3" json:"co,omitempty"`
+	Humidity      float32                `protobuf:"fixed32,5,opt,name=humidity,proto3" json:"humidity,omitempty"`
+	Light         bool                   `protobuf:"varint,6,opt,name=light,proto3" json:"light,omitempty"`
+	Lpg           float64                `protobuf:"fixed64,7,opt,name=lpg,proto3" json:"lpg,omitempty"`
+	Motion        bool                   `protobuf:"varint,8,opt,name=motion,proto3" json:"motion,omitempty"`
+	Smoke         float64                `protobuf:"fixed64,9,opt,name=smoke,proto3" json:"smoke,omitempty"`
+	Temperature   float32                `protobuf:"fixed32,10,opt,name=temperature,proto3" json:"temperature,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -64,6 +65,13 @@ func (x *Reading) ProtoReflect() protoreflect.Message {
 // Deprecated: Use Reading.ProtoReflect.Descriptor instead.
 func (*Reading) Descriptor() ([]byte, []int) {
 	return file_Reading_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Reading) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *Reading) GetTimestamp() string {
@@ -397,17 +405,19 @@ var File_Reading_proto protoreflect.FileDescriptor
 
 const file_Reading_proto_rawDesc = "" +
 	"\n" +
-	"\rReading.proto\"\xe8\x01\n" +
-	"\aReading\x12\x1c\n" +
-	"\ttimestamp\x18\x01 \x01(\tR\ttimestamp\x12\x1b\n" +
-	"\tdevice_id\x18\x02 \x01(\tR\bdeviceId\x12\x0e\n" +
-	"\x02co\x18\x03 \x01(\x01R\x02co\x12\x1a\n" +
-	"\bhumidity\x18\x04 \x01(\x02R\bhumidity\x12\x14\n" +
-	"\x05light\x18\x05 \x01(\bR\x05light\x12\x10\n" +
-	"\x03lpg\x18\x06 \x01(\x01R\x03lpg\x12\x16\n" +
-	"\x06motion\x18\a \x01(\bR\x06motion\x12\x14\n" +
-	"\x05smoke\x18\b \x01(\x01R\x05smoke\x12 \n" +
-	"\vtemperature\x18\t \x01(\x02R\vtemperature\">\n" +
+	"\rReading.proto\"\xf8\x01\n" +
+	"\aReading\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1c\n" +
+	"\ttimestamp\x18\x02 \x01(\tR\ttimestamp\x12\x1b\n" +
+	"\tdevice_id\x18\x03 \x01(\tR\bdeviceId\x12\x0e\n" +
+	"\x02co\x18\x04 \x01(\x01R\x02co\x12\x1a\n" +
+	"\bhumidity\x18\x05 \x01(\x02R\bhumidity\x12\x14\n" +
+	"\x05light\x18\x06 \x01(\bR\x05light\x12\x10\n" +
+	"\x03lpg\x18\a \x01(\x01R\x03lpg\x12\x16\n" +
+	"\x06motion\x18\b \x01(\bR\x06motion\x12\x14\n" +
+	"\x05smoke\x18\t \x01(\x01R\x05smoke\x12 \n" +
+	"\vtemperature\x18\n" +
+	" \x01(\x02R\vtemperature\">\n" +
 	"\x16GetAllReadingsResponse\x12$\n" +
 	"\breadings\x18\x01 \x03(\v2\b.ReadingR\breadings\"#\n" +
 	"\x11GetReadingRequest\x12\x0e\n" +

@@ -5,14 +5,15 @@ import (
 	"DataManager/internal/database"
 	"DataManager/internal/pb"
 	"DataManager/internal/services"
-	"context"
 	"log"
+	"net"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
 
 	var err error
-	var ctx = context.Background()
 
 	if err = config.Init(); err != nil {
 		log.Fatal(err)
@@ -22,8 +23,16 @@ func main() {
 	}
 	defer database.DB.Close()
 
+	lis, err := net.Listen("tcp", "localhost:8080")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	println("Listening on " + lis.Addr().String())
+
+	grpcServer := grpc.NewServer()
+
 	readingService := services.NewReadingService(database.DB)
-	var readings *pb.GetAllReadingsResponse
-	readings, err = readingService.GetAllReadings(ctx)
-	print(readings)
+	pb.RegisterReadingServiceServer(grpcServer, readingService)
+
+	grpcServer.Serve(lis)
 }

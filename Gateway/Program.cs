@@ -1,4 +1,5 @@
 using Gateway.Protos;
+using Gateway.Repository;
 using Grpc.Core;
 using Grpc.Net.Client;
 
@@ -8,6 +9,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddGrpcClient<ReadingService.ReadingServiceClient>(o =>
+{
+    o.Address = new Uri("http://localhost:8080");
+});
+builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
 
 var app = builder.Build();
 
@@ -25,12 +31,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
-using var channel = GrpcChannel.ForAddress("http://localhost:8080");
-var client = new ReadingService.ReadingServiceClient(channel);
+// using var channel = GrpcChannel.ForAddress("http://localhost:8080");
+// var client = new ReadingService.ReadingServiceClient(channel);
+//
+// var reply = await client.GetAllReadingsAsync(new Empty(), new CallOptions());
+// Console.WriteLine(reply.Readings);
 
-var reply = await client.GetAllReadingsAsync(new Empty(), new CallOptions());
-
-Console.WriteLine(reply.Readings);
 app.Run();
 
 

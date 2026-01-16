@@ -1,21 +1,51 @@
-using Gateway.Protos;
+using Gateway.Model;
+using Gateway.Repository;
 using Microsoft.AspNetCore.Mvc;
 
+namespace Gateway.Controllers;
+    
 [ApiController]
 [Route("api/[controller]")]
 public class ReadingsController : ControllerBase
 {
-    private readonly ReadingService.ReadingServiceClient _client;
+    private readonly IReadingRepository _repo;
 
-    public ReadingsController(ReadingService.ReadingServiceClient client)
+    public ReadingsController(IReadingRepository repo)
     {
-        _client = client;
+        _repo = repo;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public ActionResult<IEnumerable<Reading>> GetAll()
     {
-        var response = await _client.GetAllReadingsAsync(new Empty());
-        return Ok(response.Readings);
+        return Ok(_repo.GetAllReadings());
+    }
+
+    [HttpGet("{id:int}")]
+    public ActionResult<Reading> Get(int id)
+    {
+        return Ok(_repo.GetReading(id));
+    }
+
+    [HttpPost]
+    public IActionResult Create([FromBody] Reading reading)
+    {
+        _repo.CreateReading(reading);
+        return Created("", reading);
+    }
+
+    [HttpPut("{id:int}")]
+    public IActionResult Update(int id, [FromBody] Reading reading)
+    {
+        reading.Id = id;
+        _repo.UpdateReading(reading);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult Delete(int id)
+    {
+        _repo.DeleteReading(id);
+        return NoContent();
     }
 }

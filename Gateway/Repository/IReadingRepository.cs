@@ -9,5 +9,4 @@ public interface IReadingRepository
     void CreateReading(Reading reading);
     void UpdateReading(Reading reading);
     void DeleteReading(int id);
-    void Save();
 }

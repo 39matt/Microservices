@@ -15,6 +15,7 @@ func main() {
 
 	var err error
 
+	// No need in container, only locally
 	if err = config.Init(); err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +24,7 @@ func main() {
 	}
 	defer database.DB.Close()
 
-	lis, err := net.Listen("tcp", "localhost:8080")
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

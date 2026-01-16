@@ -100,14 +100,14 @@ func (s *ReadingService) CreateReading(ctx context.Context, request *pb.CreateRe
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id`
 
-	var id int
+	var idStr string
 	err := s.DB.QueryRowContext(ctx, query, r.GetTimestamp(), r.GetDeviceId(), r.GetCo(),
 		r.GetHumidity(), r.GetLight(), r.GetLpg(),
-		r.GetMotion(), r.GetSmoke(), r.GetTemperature()).Scan(&id)
+		r.GetMotion(), r.GetSmoke(), r.GetTemperature()).Scan(&idStr)
 	if err != nil {
 		return nil, fmt.Errorf("create reading failed: %w", err)
 	}
-
+	id, err := strconv.Atoi(idStr)
 	log.Printf("Added reading ID: %d", id)
 	return &pb.CreateReadingResponse{Id: int32(id)}, nil
 }
@@ -135,10 +135,6 @@ func (s *ReadingService) RemoveReading(ctx context.Context, request *pb.RemoveRe
 }
 
 func (s *ReadingService) UpdateReading(ctx context.Context, request *pb.UpdateReadingRequest) (*pb.Empty, error) {
-	var id string
-	if id = request.GetId(); len(id) == 0 {
-		return nil, errors.New("id is required")
-	}
 	var r *pb.Reading
 	if r = request.GetReading(); r == nil {
 		return nil, errors.New("reading is required")
@@ -152,7 +148,7 @@ func (s *ReadingService) UpdateReading(ctx context.Context, request *pb.UpdateRe
 	result, err := database.DB.ExecContext(ctx, query,
 		r.GetTimestamp(), r.GetDeviceId(), r.GetCo(),
 		r.GetHumidity(), r.GetLight(), r.GetLpg(),
-		r.GetMotion(), r.GetSmoke(), r.GetTemperature(), id,
+		r.GetMotion(), r.GetSmoke(), r.GetTemperature(), r.GetId(),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("update reading failed: %w", err)
@@ -162,6 +158,6 @@ func (s *ReadingService) UpdateReading(ctx context.Context, request *pb.UpdateRe
 	if rows == 0 {
 		return nil, errors.New("update reading failed: reading not found")
 	}
-	log.Printf("Added reading ID: %d", id)
+	log.Printf("Added reading ID: %d", r.GetId())
 	return &pb.Empty{}, nil
 }

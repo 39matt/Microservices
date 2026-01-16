@@ -359,8 +359,7 @@ func (x *RemoveReadingRequest) GetId() string {
 
 type UpdateReadingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Reading       *Reading               `protobuf:"bytes,2,opt,name=reading,proto3" json:"reading,omitempty"`
+	Reading       *Reading               `protobuf:"bytes,1,opt,name=reading,proto3" json:"reading,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -393,13 +392,6 @@ func (x *UpdateReadingRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateReadingRequest.ProtoReflect.Descriptor instead.
 func (*UpdateReadingRequest) Descriptor() ([]byte, []int) {
 	return file_Reading_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *UpdateReadingRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 func (x *UpdateReadingRequest) GetReading() *Reading {
@@ -471,10 +463,9 @@ const file_Reading_proto_rawDesc = "" +
 	"\x15CreateReadingResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\"&\n" +
 	"\x14RemoveReadingRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"J\n" +
-	"\x14UpdateReadingRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\"\n" +
-	"\areading\x18\x02 \x01(\v2\b.ReadingR\areading\"\a\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\":\n" +
+	"\x14UpdateReadingRequest\x12\"\n" +
+	"\areading\x18\x01 \x01(\v2\b.ReadingR\areading\"\a\n" +
 	"\x05Empty2\x99\x02\n" +
 	"\x0eReadingService\x123\n" +
 	"\x0eGetAllReadings\x12\x06.Empty\x1a\x17.GetAllReadingsResponse\"\x00\x12,\n" +

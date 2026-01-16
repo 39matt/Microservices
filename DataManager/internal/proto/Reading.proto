@@ -42,8 +42,7 @@ message RemoveReadingRequest {
 }
 
 message UpdateReadingRequest {
-  string id = 1;
-  Reading reading = 2;
+  Reading reading = 1;
 }
 
 message Empty {}

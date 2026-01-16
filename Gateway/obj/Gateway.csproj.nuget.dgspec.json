@@ -44,9 +44,35 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "Google.Protobuf": {
+              "target": "Package",
+              "version": "[3.33.4, )"
+            },
+            "Grpc.Net.Client": {
+              "target": "Package",
+              "version": "[2.76.0, )"
+            },
+            "Grpc.Net.ClientFactory": {
+              "target": "Package",
+              "version": "[2.76.0, )"
+            },
+            "Grpc.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.76.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.0-rc.1.25451.107, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[10.1.0, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[10.1.0, )"
             }
           },
           "imports": [

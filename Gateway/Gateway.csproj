@@ -8,7 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107"/>
+        <Protobuf Include="Protos\reading.proto" GrpcServices="Client" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.33.4" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.76.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.76.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
+    </ItemGroup>
 </Project>

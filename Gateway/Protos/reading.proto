@@ -1,0 +1,48 @@
+syntax = "proto3";
+option csharp_namespace = "Gateway.Protos";
+
+service ReadingService {
+  rpc GetAllReadings(Empty) returns (GetAllReadingsResponse) {}
+  rpc GetReading(GetReadingRequest) returns (Reading) {}
+  rpc CreateReading(CreateReadingRequest) returns (CreateReadingResponse) {}
+  rpc RemoveReading(RemoveReadingRequest) returns (Empty) {}
+  rpc UpdateReading(UpdateReadingRequest) returns (Empty) {}
+}
+
+message Reading {
+  string id = 1;
+  string timestamp = 2;
+  string device_id = 3;
+  double co = 4;
+  float humidity = 5;
+  bool light = 6;
+  double lpg = 7;
+  bool motion = 8;
+  double smoke = 9;
+  float temperature = 10;
+}
+
+message GetAllReadingsResponse {
+  repeated Reading readings = 1;
+}
+
+message GetReadingRequest {
+  string id = 1;
+}
+
+message CreateReadingRequest {
+  Reading reading = 1;
+}
+message CreateReadingResponse {
+  int32 id = 1;
+}
+
+message RemoveReadingRequest {
+  string id = 1;
+}
+
+message UpdateReadingRequest {
+  Reading reading = 1;
+}
+
+message Empty {}

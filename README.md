@@ -60,8 +60,6 @@ All services are containerized and orchestrated using **Docker Compose**.
 
 ## ⚙️ How to Run Locally
 
-### Option 1 – Run the full stack with Docker Compose
-
 The simplest way to start all services together:
 
 ```bash
@@ -82,38 +80,6 @@ To stop containers:
 ```bash
 docker-compose down
 ```
-
----
-
-### Option 2 – Run services manually
-
-If you prefer to run services individually for development or debugging:
-
-1. **Start PostgreSQL:**
-   ```bash
-   docker run -d --name postgres --network iot-net -p 5433:5432 \
-     -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=iotdb \
-     postgres:16
-   ```
-
-2. **Build and run Data Manager:**
-   ```bash
-   docker build -t datamanager .
-   docker run -d --name datamanager --network iot-net -p 8081:8080 \
-     -e POSTGRES_URL="postgres://user:password@postgres:5432/iotdb?sslmode=disable" datamanager
-   ```
-
-3. **Build and run Gateway:**
-   ```bash
-   docker buildx build --platform linux/amd64 --load -t gateway .
-   docker run -d -p 5237:5236 --name gateway -e DATAMANAGER_HOST=datamanager:8080 gateway
-   ```
-
-4. **(Optional) Run Sensor Generator locally:**
-   ```bash
-   python sensor_generator.py
-   ```
-
 
 ---
 

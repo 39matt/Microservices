@@ -83,7 +83,7 @@
           "build/Grpc.Tools.targets": {}
         }
       },
-      "Microsoft.AspNetCore.OpenApi/10.0.0-rc.1.25451.107": {
+      "Microsoft.AspNetCore.OpenApi/10.0.2": {
         "type": "package",
         "dependencies": {
           "Microsoft.OpenApi": "2.0.0"
@@ -352,10 +352,10 @@
         "tools/windows_x86/protoc.exe"
       ]
     },
-    "Microsoft.AspNetCore.OpenApi/10.0.0-rc.1.25451.107": {
-      "sha512": "qDH09sfjprh4NnjJbg0LX07G/xFn1AEB4B0zphrWFkC/OhtJHv+MnGi2NU9KbXwnHedIBrmMDGt0MSD+Ipo53g==",
+    "Microsoft.AspNetCore.OpenApi/10.0.2": {
+      "sha512": "YuEjUNpsoZLs0I5ONt013Z+Udsz3f9sPUh1Xm59LN7+/Z8oVG/swCUYLBbANtfreiunWnoT2uk+5kst4s2jr3Q==",
       "type": "package",
-      "path": "microsoft.aspnetcore.openapi/10.0.0-rc.1.25451.107",
+      "path": "microsoft.aspnetcore.openapi/10.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -366,7 +366,7 @@
         "build/Microsoft.AspNetCore.OpenApi.targets",
         "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll",
         "lib/net10.0/Microsoft.AspNetCore.OpenApi.xml",
-        "microsoft.aspnetcore.openapi.10.0.0-rc.1.25451.107.nupkg.sha512",
+        "microsoft.aspnetcore.openapi.10.0.2.nupkg.sha512",
         "microsoft.aspnetcore.openapi.nuspec"
       ]
     },
@@ -458,7 +458,7 @@
       "Grpc.Net.Client >= 2.76.0",
       "Grpc.Net.ClientFactory >= 2.76.0",
       "Grpc.Tools >= 2.76.0",
-      "Microsoft.AspNetCore.OpenApi >= 10.0.0-rc.1.25451.107",
+      "Microsoft.AspNetCore.OpenApi >= 10.0.2",
       "Swashbuckle.AspNetCore.SwaggerGen >= 10.1.0",
       "Swashbuckle.AspNetCore.SwaggerUI >= 10.1.0"
     ]
@@ -526,7 +526,7 @@
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
-            "version": "[10.0.0-rc.1.25451.107, )"
+            "version": "[10.0.2, )"
           },
           "Swashbuckle.AspNetCore.SwaggerGen": {
             "target": "Package",

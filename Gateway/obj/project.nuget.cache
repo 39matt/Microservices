@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "MFICR3gq9XE=",
+  "dgSpecHash": "YN0nIw8+PTk=",
   "success": true,
   "projectFilePath": "/Users/matija/Faks/IoTS/Microservices/Gateway/Gateway.csproj",
   "expectedPackageFiles": [
@@ -10,7 +10,7 @@
     "/Users/matija/.nuget/packages/grpc.net.clientfactory/2.76.0/grpc.net.clientfactory.2.76.0.nupkg.sha512",
     "/Users/matija/.nuget/packages/grpc.net.common/2.76.0/grpc.net.common.2.76.0.nupkg.sha512",
     "/Users/matija/.nuget/packages/grpc.tools/2.76.0/grpc.tools.2.76.0.nupkg.sha512",
-    "/Users/matija/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0-rc.1.25451.107/microsoft.aspnetcore.openapi.10.0.0-rc.1.25451.107.nupkg.sha512",
+    "/Users/matija/.nuget/packages/microsoft.aspnetcore.openapi/10.0.2/microsoft.aspnetcore.openapi.10.0.2.nupkg.sha512",
     "/Users/matija/.nuget/packages/microsoft.openapi/2.3.0/microsoft.openapi.2.3.0.nupkg.sha512",
     "/Users/matija/.nuget/packages/swashbuckle.aspnetcore.swagger/10.1.0/swashbuckle.aspnetcore.swagger.10.1.0.nupkg.sha512",
     "/Users/matija/.nuget/packages/swashbuckle.aspnetcore.swaggergen/10.1.0/swashbuckle.aspnetcore.swaggergen.10.1.0.nupkg.sha512",

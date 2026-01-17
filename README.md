@@ -35,7 +35,7 @@ A **gRPC service** responsible for data storage and CRUD operations.
 
 An **API Gateway and frontend** that communicates with the Data Manager via gRPC.
 
-- Uses **OpenAPI** for documentation.  
+- Uses **OpenAPI** for [documentation.](https://app.swaggerhub.com/apis/elfak-695/Project1/1.0.0)  
 - Implements **MVC architecture** for a clean separation of concerns.  
 - Provides a REST interface for clients to access sensor data.  
 - Forwards data operations to the Data Manager via gRPC calls.

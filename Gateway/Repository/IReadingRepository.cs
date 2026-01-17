@@ -1,4 +1,5 @@
 using Gateway.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gateway.Repository;
 
@@ -9,4 +10,5 @@ public interface IReadingRepository
     void CreateReading(Reading reading);
     void UpdateReading(Reading reading);
     void DeleteReading(int id);
+    void DeleteAllReadings();
 }

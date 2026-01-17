@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	println("Listening on " + lis.Addr().String())
+	log.Println("Listening on " + lis.Addr().String())
 
 	grpcServer := grpc.NewServer()
 

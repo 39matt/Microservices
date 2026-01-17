@@ -1,4 +1,5 @@
 using Gateway.Protos;
+using Microsoft.AspNetCore.Mvc;
 using Reading = Gateway.Model.Reading;
 
 namespace Gateway.Repository;
@@ -44,9 +45,13 @@ public class ReadingRepository : IReadingRepository
     public void DeleteReading(int id)
     {
         var request = new RemoveReadingRequest() { Id = id.ToString() };
-        
         _grpcClient.RemoveReading(request);
         
+    }
+    public void DeleteAllReadings()
+    {
+        var request = new Empty();
+        _grpcClient.DeleteAllReadings(request);
     }
     
     private static Reading MapProtoToModel(Gateway.Protos.Reading r) =>

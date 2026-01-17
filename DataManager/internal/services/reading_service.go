@@ -161,3 +161,15 @@ func (s *ReadingService) UpdateReading(ctx context.Context, request *pb.UpdateRe
 	log.Printf("Added reading ID: %d", r.GetId())
 	return &pb.Empty{}, nil
 }
+
+func (s *ReadingService) DeleteAllReadings(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
+	query := `TRUNCATE TABLE readings RESTART IDENTITY`
+
+	_, err := s.DB.ExecContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("delete all readings failed: %w", err)
+	}
+
+	log.Println("🗑️ Cleared all readings (table truncated)")
+	return &pb.Empty{}, nil
+}

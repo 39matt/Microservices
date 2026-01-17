@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ReadingService_GetAllReadings_FullMethodName = "/ReadingService/GetAllReadings"
-	ReadingService_GetReading_FullMethodName     = "/ReadingService/GetReading"
-	ReadingService_CreateReading_FullMethodName  = "/ReadingService/CreateReading"
-	ReadingService_RemoveReading_FullMethodName  = "/ReadingService/RemoveReading"
-	ReadingService_UpdateReading_FullMethodName  = "/ReadingService/UpdateReading"
+	ReadingService_GetAllReadings_FullMethodName    = "/ReadingService/GetAllReadings"
+	ReadingService_GetReading_FullMethodName        = "/ReadingService/GetReading"
+	ReadingService_CreateReading_FullMethodName     = "/ReadingService/CreateReading"
+	ReadingService_RemoveReading_FullMethodName     = "/ReadingService/RemoveReading"
+	ReadingService_UpdateReading_FullMethodName     = "/ReadingService/UpdateReading"
+	ReadingService_DeleteAllReadings_FullMethodName = "/ReadingService/DeleteAllReadings"
 )
 
 // ReadingServiceClient is the client API for ReadingService service.
@@ -35,6 +36,7 @@ type ReadingServiceClient interface {
 	CreateReading(ctx context.Context, in *CreateReadingRequest, opts ...grpc.CallOption) (*CreateReadingResponse, error)
 	RemoveReading(ctx context.Context, in *RemoveReadingRequest, opts ...grpc.CallOption) (*Empty, error)
 	UpdateReading(ctx context.Context, in *UpdateReadingRequest, opts ...grpc.CallOption) (*Empty, error)
+	DeleteAllReadings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type readingServiceClient struct {
@@ -95,6 +97,16 @@ func (c *readingServiceClient) UpdateReading(ctx context.Context, in *UpdateRead
 	return out, nil
 }
 
+func (c *readingServiceClient) DeleteAllReadings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, ReadingService_DeleteAllReadings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ReadingServiceServer is the server API for ReadingService service.
 // All implementations must embed UnimplementedReadingServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type ReadingServiceServer interface {
 	CreateReading(context.Context, *CreateReadingRequest) (*CreateReadingResponse, error)
 	RemoveReading(context.Context, *RemoveReadingRequest) (*Empty, error)
 	UpdateReading(context.Context, *UpdateReadingRequest) (*Empty, error)
+	DeleteAllReadings(context.Context, *Empty) (*Empty, error)
 	mustEmbedUnimplementedReadingServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedReadingServiceServer) RemoveReading(context.Context, *RemoveR
 }
 func (UnimplementedReadingServiceServer) UpdateReading(context.Context, *UpdateReadingRequest) (*Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateReading not implemented")
+}
+func (UnimplementedReadingServiceServer) DeleteAllReadings(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAllReadings not implemented")
 }
 func (UnimplementedReadingServiceServer) mustEmbedUnimplementedReadingServiceServer() {}
 func (UnimplementedReadingServiceServer) testEmbeddedByValue()                        {}
@@ -240,6 +256,24 @@ func _ReadingService_UpdateReading_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReadingService_DeleteAllReadings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReadingServiceServer).DeleteAllReadings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReadingService_DeleteAllReadings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReadingServiceServer).DeleteAllReadings(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ReadingService_ServiceDesc is the grpc.ServiceDesc for ReadingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var ReadingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateReading",
 			Handler:    _ReadingService_UpdateReading_Handler,
+		},
+		{
+			MethodName: "DeleteAllReadings",
+			Handler:    _ReadingService_DeleteAllReadings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

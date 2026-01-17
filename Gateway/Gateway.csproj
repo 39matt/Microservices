@@ -8,7 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(DockerDefaultTarget)' != 'true'">
-        <Protobuf Include="Protos\reading.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos\reading.proto" GrpcServices="Client" >
+            <GrpcServices>Client</GrpcServices>
+        </Protobuf>
     </ItemGroup>
     
     <ItemGroup>

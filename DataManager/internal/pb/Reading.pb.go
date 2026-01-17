@@ -466,14 +466,15 @@ const file_Reading_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\":\n" +
 	"\x14UpdateReadingRequest\x12\"\n" +
 	"\areading\x18\x01 \x01(\v2\b.ReadingR\areading\"\a\n" +
-	"\x05Empty2\x99\x02\n" +
+	"\x05Empty2\xc0\x02\n" +
 	"\x0eReadingService\x123\n" +
 	"\x0eGetAllReadings\x12\x06.Empty\x1a\x17.GetAllReadingsResponse\"\x00\x12,\n" +
 	"\n" +
 	"GetReading\x12\x12.GetReadingRequest\x1a\b.Reading\"\x00\x12@\n" +
 	"\rCreateReading\x12\x15.CreateReadingRequest\x1a\x16.CreateReadingResponse\"\x00\x120\n" +
 	"\rRemoveReading\x12\x15.RemoveReadingRequest\x1a\x06.Empty\"\x00\x120\n" +
-	"\rUpdateReading\x12\x15.UpdateReadingRequest\x1a\x06.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
+	"\rUpdateReading\x12\x15.UpdateReadingRequest\x1a\x06.Empty\"\x00\x12%\n" +
+	"\x11DeleteAllReadings\x12\x06.Empty\x1a\x06.Empty\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_Reading_proto_rawDescOnce sync.Once
@@ -507,13 +508,15 @@ var file_Reading_proto_depIdxs = []int32{
 	3, // 5: ReadingService.CreateReading:input_type -> CreateReadingRequest
 	5, // 6: ReadingService.RemoveReading:input_type -> RemoveReadingRequest
 	6, // 7: ReadingService.UpdateReading:input_type -> UpdateReadingRequest
-	1, // 8: ReadingService.GetAllReadings:output_type -> GetAllReadingsResponse
-	0, // 9: ReadingService.GetReading:output_type -> Reading
-	4, // 10: ReadingService.CreateReading:output_type -> CreateReadingResponse
-	7, // 11: ReadingService.RemoveReading:output_type -> Empty
-	7, // 12: ReadingService.UpdateReading:output_type -> Empty
-	8, // [8:13] is the sub-list for method output_type
-	3, // [3:8] is the sub-list for method input_type
+	7, // 8: ReadingService.DeleteAllReadings:input_type -> Empty
+	1, // 9: ReadingService.GetAllReadings:output_type -> GetAllReadingsResponse
+	0, // 10: ReadingService.GetReading:output_type -> Reading
+	4, // 11: ReadingService.CreateReading:output_type -> CreateReadingResponse
+	7, // 12: ReadingService.RemoveReading:output_type -> Empty
+	7, // 13: ReadingService.UpdateReading:output_type -> Empty
+	7, // 14: ReadingService.DeleteAllReadings:output_type -> Empty
+	9, // [9:15] is the sub-list for method output_type
+	3, // [3:9] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name

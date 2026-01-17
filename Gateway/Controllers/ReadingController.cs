@@ -48,4 +48,11 @@ public class ReadingsController : ControllerBase
         _repo.DeleteReading(id);
         return NoContent();
     }
+    
+    [HttpDelete]
+    public IActionResult DeleteAll()
+    {
+        _repo.DeleteAllReadings();
+        return NoContent();
+    }
 }

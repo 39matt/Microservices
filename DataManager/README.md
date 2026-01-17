@@ -12,24 +12,12 @@ internal/proto/Reading.proto
 
 ## Docker instructions
 
-### Server
-1.  docker build -t datamanager .
-2.  docker run -d --network iot-net -p 8080:8080
-    -e POSTGRES_URL="postgres://user:password@postgres:5432/iotdb?sslmode=disable" datamanager
-    - connect to network (same as database)
-    - expose 8080 on the container and bind it to 8080 locally
-    - environment variable
-
 ### Postgres
-1. docker run -d \
-   --name postgres \
-   -e POSTGRES_DB=iotdb \
-   -e POSTGRES_USER=user \
-   -e POSTGRES_PASSWORD=pass \
-   -p 5432:5432 \
-   -v postgres_data:/var/lib/postgresql/data \
-   postgres:15-alpine
+1. docker run -d --name postgres --network iot-net -p 5433:5432 \
+   -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=iotdb \
+   postgres:16
    - change user/pass for authentication on your local postgres
+   - 5433 locally, 5432 in container
 2. Run commands:
    - Create a database
     ```shell
@@ -59,3 +47,10 @@ internal/proto/Reading.proto
     VALUES (1, '2026-01-16T17:27:00Z', 'device-001', 1.5, 60.2, true, 2.718, false, 0.3, 23.1)
     ON CONFLICT (id) DO NOTHING;"
     ```
+
+### Server
+1.  docker build -t datamanager .
+2.  docker run -d --name datamanager --network iot-net -p 8081:8080 -e POSTGRES_URL="postgres://user:password@postgres:5432/iotdb?sslmode=disable" datamanager
+    - connect to network (same as database)
+    - expose 8080 on the container and bind it to 8081 locally
+    - environment variable

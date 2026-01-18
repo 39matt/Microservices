@@ -51,6 +51,17 @@ services:
       - mosquitto_log:/mosquitto/log
     networks:
       - iot-net-2
+
+  eventmanager:
+    build: ./EventManager
+    container_name: eventmanager-2
+    ports:
+      - "8091:8090"
+    networks:
+      - iot-net-2
+    depends_on:
+      - mosquitto
+
       
 networks:
   iot-net-2:

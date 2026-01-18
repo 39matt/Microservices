@@ -20,7 +20,7 @@ The dataset used for simulation is sourced from [Environmental Sensor Data on Ka
 
 ---
 
-## 📦 Project 1 – Environmental Data System
+## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
 ```mermaid
 graph TB
     SG[SensorGenerator<br/>IoT Data from CSV] -->|REST POST /data| GW[Gateway<br/>.NET REST API<br/>Port 5236]
@@ -109,8 +109,9 @@ docker-compose down
 
 ## 📈 Future Projects
 
-### Project 2 – TBD
-_(Placeholder for upcoming expansion: e.g. real-time analytics or dashboard integration)_
+### Project 2 – MQTT
+Addition of MQTT protocol using Mosquitto.
+[AsyncAPI Specification](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/39matt/Microservices/refs/heads/main/DataManager/asyncapi.txt)
 
 ### Project 3 – TBD
 _(Potential service for notification, ML predictions, or sensor anomaly detection)_

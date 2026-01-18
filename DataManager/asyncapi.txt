@@ -1,0 +1,85 @@
+asyncapi: 3.0.0
+info:
+  title: DataManager CreateReading Event
+  version: 1.0.0
+  description: |-
+    MQTT publish event triggered by gRPC CreateReading operation in DataManager.
+    ### Features:
+    * Publishes new sensor readings after database insertion 📤
+
+servers:
+  mqtt:
+    host: 'localhost:{port}'
+    protocol: mqtt
+    description: Development MQTT broker (Mosquitto)
+    variables:
+      port:
+        default: '1884'
+
+channels:
+  readings:
+    address: readings/create
+    summary: New sensor reading created via gRPC CreateReading
+    description: Published after INSERT into Postgres readings table
+    messages:
+      reading:
+        $ref: '#/components/messages/reading'
+
+operations:
+  sendReading:
+    action: send
+    channel:
+      $ref: '#/channels/readings'
+    summary: Publish sensor reading after successful creation.
+    traits:
+      - $ref: '#/components/operationTraits/mqtt'
+
+components:
+  messages:
+    reading:
+      name: Reading
+      title: Sensor Reading Published
+      summary: Protobuf-encoded reading data from device.
+      contentType: application/protobuf
+      payload:
+        $ref: '#/components/schemas/readingSchema'
+  schemas:
+    readingSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        deviceId:
+          type: string
+        co:
+          type: number
+        humidity:
+          type: number
+        light:
+          type: boolean
+        lpg:
+          type: number
+        motion:
+          type: boolean
+        smoke:
+          type: number
+        temperature:
+          type: number
+      required:
+        - timestamp
+        - deviceId
+        - co
+        - humidity
+        - light
+        - lpg
+        - motion
+        - smoke
+        - temperature
+  operationTraits:
+    mqtt:
+      bindings:
+        mqtt:
+          qos: 0

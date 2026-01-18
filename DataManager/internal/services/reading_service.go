@@ -1,6 +1,7 @@
 package services
 
 import (
+	"DataManager/internal/adapters/mqtt"
 	"DataManager/internal/database"
 	"DataManager/internal/pb"
 	"context"
@@ -109,6 +110,10 @@ func (s *ReadingService) CreateReading(ctx context.Context, request *pb.CreateRe
 	}
 	id, err := strconv.Atoi(idStr)
 	log.Printf("Added reading ID: %d", id)
+
+	if err = mqtt.PublishReading("/readings", r); err != nil {
+		return nil, fmt.Errorf("publish readings failed: %w", err)
+	}
 	return &pb.CreateReadingResponse{Id: int32(id)}, nil
 }
 

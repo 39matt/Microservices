@@ -13,7 +13,7 @@ internal/proto/Reading.proto
 ## Docker instructions
 
 ### Postgres
-1. docker run -d --name postgres --network iot-net -p 5433:5432 \
+1. docker run -d --name postgres --network iot-net -p 5432:5432 \
    -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=iotdb \
    postgres:16
    - change user/pass for authentication on your local postgres

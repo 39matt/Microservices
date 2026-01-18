@@ -1,14 +1,12 @@
 package main
 
 import (
+	"DataManager/internal/adapters/grpc"
+	"DataManager/internal/adapters/mqtt"
 	"DataManager/internal/config"
 	"DataManager/internal/database"
-	"DataManager/internal/pb"
-	"DataManager/internal/services"
+	"database/sql"
 	"log"
-	"net"
-
-	"google.golang.org/grpc"
 )
 
 func main() {
@@ -22,18 +20,22 @@ func main() {
 	if err = database.InitPostgres(); err != nil {
 		log.Fatal(err)
 	}
-	defer database.DB.Close()
+	defer func(DB *sql.DB) {
+		err = DB.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(database.DB)
 
-	lis, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+	if err = mqtt.InitMqtt(); err != nil {
+		log.Fatal(err)
 	}
-	log.Println("Listening on " + lis.Addr().String())
 
-	grpcServer := grpc.NewServer()
+	//if err = mqtt.PublishMessage("a", "Hello"); err != nil {
+	//	log.Fatal(err)
+	//}
 
-	readingService := services.NewReadingService(database.DB)
-	pb.RegisterReadingServiceServer(grpcServer, readingService)
-
-	grpcServer.Serve(lis)
+	if err = grpc.InitGrpcServer(); err != nil {
+		log.Fatal(err)
+	}
 }

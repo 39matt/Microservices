@@ -55,7 +55,7 @@ A lightweight **data simulator** that mimics IoT devices by sending sensor readi
 All services are containerized and orchestrated using **Docker Compose**.
 
 - Each component (Gateway, Data Manager, PostgreSQL) runs in its own container.
-- Shared networks enable cross-service communication.
+- Shared network **iot-net** enables cross-service communication.
 - Environment variables handle ports, credentials, and connection strings.
 
 ## ⚙️ How to Run Locally
@@ -67,12 +67,12 @@ docker-compose up --build
 ```
 
 This command will:
-- Build and start the **PostgreSQL**, **Data Manager**, **Gateway**, and **Sensor Generator** containers.
+- Build and start the **PostgreSQL**, **Data Manager**, **Gateway**, and containers.
 - Create a shared Docker network for service communication.
 - Expose ports as configured inside `docker-compose.yml`.
 
 Once started:
-- Gateway should be available at: [**http://localhost:[gateway-port]**](http://localhost:[gateway-port])
+- Gateway should be available at: [**http://localhost:5237**](http://localhost:5237)
 - Data Manager runs internally and communicates via gRPC.
 
 To stop containers:

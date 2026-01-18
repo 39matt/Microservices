@@ -1,7 +1,6 @@
 package mqtt
 
 import (
-	"DataManager/internal/pb"
 	"fmt"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -10,8 +9,8 @@ import (
 var mqttClient mqtt.Client
 
 const (
-	broker   = "tcp://localhost:1884"
-	clientID = "iot-mqtt-client"
+	broker   = "tcp://mosquitto:1883"
+	clientID = "iot-mqtt-publisher"
 )
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
@@ -47,12 +46,12 @@ func PublishMessage(topic string, message string) error {
 	return nil
 }
 
-func PublishReading(topic string, reading *pb.Reading) error {
+func PublishReading(topic string, reading []byte) error {
 	token := mqttClient.Publish(topic, 0, false, reading)
 	token.Wait()
 	if token.Error() != nil {
 		return token.Error()
 	}
-	fmt.Printf("Reading '%+v' published!\n", reading)
+	fmt.Printf("Reading published!\n")
 	return nil
 }

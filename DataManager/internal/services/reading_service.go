@@ -3,9 +3,11 @@ package services
 import (
 	"DataManager/internal/adapters/mqtt"
 	"DataManager/internal/database"
+	"DataManager/internal/models"
 	"DataManager/internal/pb"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -92,7 +94,7 @@ func (s *ReadingService) GetReading(ctx context.Context, request *pb.GetReadingR
 }
 
 func (s *ReadingService) CreateReading(ctx context.Context, request *pb.CreateReadingRequest) (*pb.CreateReadingResponse, error) {
-	r := request.GetReading()
+	r := models.ConvertFromProto(request.GetReading())
 	if r == nil {
 		return nil, errors.New("reading is required")
 	}
@@ -102,16 +104,20 @@ func (s *ReadingService) CreateReading(ctx context.Context, request *pb.CreateRe
         RETURNING id`
 
 	var idStr string
-	err := s.DB.QueryRowContext(ctx, query, r.GetTimestamp(), r.GetDeviceId(), r.GetCo(),
-		r.GetHumidity(), r.GetLight(), r.GetLpg(),
-		r.GetMotion(), r.GetSmoke(), r.GetTemperature()).Scan(&idStr)
+	err := s.DB.QueryRowContext(ctx, query, r.Timestamp, r.DeviceID, r.Co,
+		r.Humidity, r.Light, r.Lpg,
+		r.Motion, r.Smoke, r.Temperature).Scan(&idStr)
 	if err != nil {
 		return nil, fmt.Errorf("create reading failed: %w", err)
 	}
 	id, err := strconv.Atoi(idStr)
 	log.Printf("Added reading ID: %d", id)
 
-	if err = mqtt.PublishReading("/readings", r); err != nil {
+	data, err := json.Marshal(r)
+	if err != nil {
+		return nil, fmt.Errorf("marshalling failed: %w", err)
+	}
+	if err = mqtt.PublishReading("/readings", data); err != nil {
 		return nil, fmt.Errorf("publish readings failed: %w", err)
 	}
 	return &pb.CreateReadingResponse{Id: int32(id)}, nil

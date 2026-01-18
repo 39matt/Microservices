@@ -1,7 +1,11 @@
 package models
 
+import (
+	"DataManager/internal/pb"
+)
+
 type Reading struct {
-	ID          int64
+	ID          string
 	Timestamp   string
 	DeviceID    string
 	Co          float64
@@ -13,23 +17,22 @@ type Reading struct {
 	Temperature float32
 }
 
-//
-//func (Reading) ConvertFromRaw(protoReading ReadingRaw) Reading {
-//	var ts float64
-//	fmt.Sscanf(protoReading.Timestamp, "%f", &ts)
-//	timestamp := time.Unix(int64(ts), int64((ts-float64(int64(ts)))*1e9))
-//
-//	return Reading{
-//		ID:          protoReading.ID,
-//		Timestamp:   timestamp.Format(time.RFC3339),
-//		DeviceID:    protoReading.DeviceID,
-//		Co:          protoReading.Co,
-//		Humidity:    protoReading.Humidity,
-//		Light:       protoReading.Light == "true",
-//		Lpg:         protoReading.Lpg,
-//		Motion:      protoReading.Motion == "true",
-//		Smoke:       protoReading.Smoke,
-//		Temperature: protoReading.Temperature,
-//	}
-//
-//}
+func ConvertFromProto(reading *pb.Reading) *Reading {
+	//var ts float64
+	//fmt.Sscanf(reading.GetTimestamp(), "%f", &ts)
+	//timestamp := time.Unix(int64(ts), int64((ts-float64(int64(ts)))*1e9))
+
+	return &Reading{
+		ID: reading.GetId(),
+		//Timestamp:   timestamp.Format(time.RFC3339),
+		Timestamp:   reading.GetTimestamp(),
+		DeviceID:    reading.GetDeviceId(),
+		Co:          reading.GetCo(),
+		Humidity:    reading.GetHumidity(),
+		Light:       reading.GetLight(),
+		Lpg:         reading.GetLpg(),
+		Motion:      reading.GetMotion(),
+		Smoke:       reading.GetSmoke(),
+		Temperature: reading.GetTemperature(),
+	}
+}

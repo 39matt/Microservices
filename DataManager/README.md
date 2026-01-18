@@ -25,7 +25,7 @@ internal/proto/Reading.proto
     ```
    - Create a table inside it
     ```shell
-    docker exec -it postgres-compose psql -U matija -d iotdb -c "
+    docker exec -it postgres-1 psql -U matija -d iotdb -c "
     DROP TABLE IF EXISTS readings CASCADE;
     CREATE TABLE public.readings (
         id SERIAL PRIMARY KEY,
@@ -42,7 +42,7 @@ internal/proto/Reading.proto
     ```
    - Insert one 
     ```shell
-    docker exec -it postgres-compose psql -U matija -d iotdb -c "
+    docker exec -it postgres-1 psql -U matija -d iotdb -c "
     INSERT INTO readings (id, timestamp, device_id, co, humidity, light, lpg, motion, smoke, temperature)
     VALUES (1, '2026-01-16T17:27:00Z', 'device-001', 1.5, 60.2, true, 2.718, false, 0.3, 23.1)
     ON CONFLICT (id) DO NOTHING;"

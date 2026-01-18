@@ -21,7 +21,31 @@ The dataset used for simulation is sourced from [Environmental Sensor Data on Ka
 ---
 
 ## 📦 Project 1 – Environmental Data System
+```mermaid
+graph TB
+    SG[SensorGenerator<br/>IoT Data from CSV] -->|REST POST /data| GW[Gateway<br/>.NET REST API<br/>Port 5236]
+    PM[Postman/grpcurl] -.->|HTTPS| GW
+    PM -.->|gRPC| DM
 
+    GW -->|gRPC| DM[DataManager<br/>Go gRPC Server<br/>Port 8080]
+    DM -->|database/sql| DB[(Postgres<br/>iotdb.readings<br/>Port 5432)]
+    
+    subgraph Server ["Server"]
+        GW
+        DM
+        DB
+    end
+    
+
+    
+    classDef service fill:#7cd4fc,color:white
+    classDef db fill:#ea9ff5,color:white
+    classDef test stroke:#ff9800
+    class GW,DM service
+    class DB db
+    class PM test
+
+```
 ### 1. Data Manager (Go)
 
 A **gRPC service** responsible for data storage and CRUD operations.

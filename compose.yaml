@@ -1,7 +1,8 @@
+name: "Project 2"
 services:
   postgres:
     image: postgres:16
-    container_name: postgres-compose
+    container_name: postgres-2
     environment:
       POSTGRES_USER: matija
       POSTGRES_PASSWORD: matija
@@ -11,36 +12,55 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - iot-net
+      - iot-net-2
+      
   datamanager:
     build: ./DataManager
-    container_name: datamanager-compose
+    container_name: datamanager-2
     ports:
       - "8081:8080"
     environment:
        POSTGRES_URL: "postgres://matija:matija@postgres:5432/iotdb?sslmode=disable"
     networks:
-      - iot-net
+      - iot-net-2
     depends_on:
       - postgres
+
   gateway:
     build: ./Gateway
-    container_name: gateway-compose
+    container_name: gateway-2
     platform: "linux/amd64"
     ports:
       - "5237:5236"
     environment:
       DATAMANAGER_HOST: "datamanager:8080"
     networks:
-      - iot-net
+      - iot-net-2
     depends_on:
       - datamanager
 
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto-2
+    ports:
+      - "1884:1883"
+      - "9002:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - iot-net-2
+      
 networks:
-  iot-net:
+  iot-net-2:
     driver: bridge
 
 volumes:
   pgdata:
+    driver: local
+  mosquitto_data:
+    driver: local
+  mosquitto_log:
     driver: local
     

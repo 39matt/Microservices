@@ -1,0 +1,95 @@
+asyncapi: 3.0.0
+info:
+  title: Telemetry Sensor Event Manager
+  version: '1.0.0'
+  description: |
+    MQTT-based service that monitors IoT sensor telemetry and publishes alerts when environmental readings exceed configured safety limits.
+    ### Features:
+    * Receives real-time sensor telemetry via MQTT (CO, humidity, temperature, smoke, LPG, motion, light) 📊
+    * Monitors environmental readings against configured safety thresholds 🔍
+    * Publishes alert events when sensor values exceed limits 🚨
+
+servers:
+  mqtt:
+    host: 'localhost:{port}'
+    protocol: mqtt
+    description: Development MQTT broker (Mosquitto)
+    variables:
+      port:
+        default: '1884'
+channels:
+  readings:
+    address: 'readings'
+    messages:
+      reading:
+        $ref: '#/components/messages/reading'
+  limit:
+    address: 'limit'
+    messages:
+      reading:
+        $ref: '#/components/messages/reading'
+operations:
+  onReadingCreated:
+    action: 'receive'
+    summary: Reading information.
+    channel:
+      $ref: '#/channels/readings'
+    traits:
+      - $ref: '#/components/operationTraits/mqtt'
+  onLimitExceeded:
+    action: 'send'
+    summary: Send reading info when some data exceeds the limit.
+    channel:
+      $ref: '#/channels/limit'
+    traits:
+      - $ref: '#/components/operationTraits/mqtt'
+
+
+components:
+  messages:
+    reading:
+      name: Reading
+      summary: Protobuf-encoded reading data from device.
+      contentType: application/protobuf
+      payload:
+        $ref: '#/components/schemas/readingSchema'
+  schemas:
+    readingSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        deviceId:
+          type: string
+        co:
+          type: number
+        humidity:
+          type: number
+        light:
+          type: boolean
+        lpg:
+          type: number
+        motion:
+          type: boolean
+        smoke:
+          type: number
+        temperature:
+          type: number
+      required:
+        - timestamp
+        - deviceId
+        - co
+        - humidity
+        - light
+        - lpg
+        - motion
+        - smoke
+        - temperature
+  operationTraits:
+    mqtt:
+      bindings:
+        mqtt:
+          qos: 1

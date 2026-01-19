@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
-  title: DataManager CreateReading Event
-  version: 1.0.0
+  title: Telemetry Sensor Data Manager
+  version: '1.0.0'
   description: |-
     MQTT publish event triggered by gRPC CreateReading operation in DataManager.
     ### Features:
@@ -18,19 +18,17 @@ servers:
 
 channels:
   readings:
-    address: readings/create
-    summary: New sensor reading created via gRPC CreateReading
-    description: Published after INSERT into Postgres readings table
+    address: 'readings'
     messages:
       reading:
         $ref: '#/components/messages/reading'
 
 operations:
-  sendReading:
-    action: send
+  onReadingCreated:
+    action: 'send'
+    summary: Reading information.
     channel:
       $ref: '#/channels/readings'
-    summary: Publish sensor reading after successful creation.
     traits:
       - $ref: '#/components/operationTraits/mqtt'
 
@@ -38,7 +36,6 @@ components:
   messages:
     reading:
       name: Reading
-      title: Sensor Reading Published
       summary: Protobuf-encoded reading data from device.
       contentType: application/protobuf
       payload:
@@ -82,4 +79,4 @@ components:
     mqtt:
       bindings:
         mqtt:
-          qos: 0
+          qos: 1

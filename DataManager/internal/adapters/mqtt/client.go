@@ -52,6 +52,6 @@ func PublishReading(topic string, reading []byte) error {
 	if token.Error() != nil {
 		return token.Error()
 	}
-	fmt.Printf("Reading published!\n")
+	fmt.Printf("Reading published to topic '%s'!\n", topic)
 	return nil
 }

@@ -1,14 +1,13 @@
 package mqtt
 
 import (
+	"EventManager/internal/data/limits"
 	"EventManager/internal/models"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
-	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -36,7 +35,6 @@ func processMsg(ctx context.Context, input <-chan mqtt.Message) chan mqtt.Messag
 				if !ok {
 					return
 				}
-				fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
 				out <- msg
 			case <-ctx.Done():
 				return
@@ -67,40 +65,6 @@ func InitMqtt(ctx context.Context) error {
 		return token.Error()
 	}
 
-	childCtx, cancel := context.WithCancel(ctx)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		finalChan := processMsg(childCtx, mqttMsgChan)
-		for msg := range finalChan {
-			if err := MessageHandler(msg); err != nil {
-				slog.Error("Handler failed", "err", err)
-				continue
-			}
-		}
-	}()
-
-	if err := SubscribeToTopic("/readings"); err != nil {
-		cancel()
-		return err
-	}
-
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-	select {
-	case sig := <-sigChan:
-		fmt.Printf("Signal received: %v\n", sig)
-	case <-ctx.Done():
-		fmt.Println("Parent context cancelled")
-	}
-
-	cancel()
-	wg.Wait()
-
-	if err := UnsubscribeFromTopic("/readings"); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -111,6 +75,16 @@ func PublishMessage(topic string, message string) error {
 		return token.Error()
 	}
 	fmt.Printf("Message '%s' published!\n", message)
+	return nil
+}
+
+func PublishReading(topic string, reading []byte) error {
+	token := mqttClient.Publish(topic, 0, false, reading)
+	token.Wait()
+	if token.Error() != nil {
+		return token.Error()
+	}
+	fmt.Printf("Reading published to topic '%s'!\n", topic)
 	return nil
 }
 
@@ -134,12 +108,50 @@ func UnsubscribeFromTopic(topic string) error {
 	return nil
 }
 
+func WatchForPublications(ctx context.Context, topic string) error {
+	if err := SubscribeToTopic(topic); err != nil {
+		return err
+	}
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		finalChan := processMsg(ctx, mqttMsgChan)
+		for msg := range finalChan {
+			if err := MessageHandler(msg); err != nil {
+				slog.Error("Handler failed", "err", err)
+				continue
+			}
+		}
+	}()
+
+	<-ctx.Done()
+	if err := UnsubscribeFromTopic(topic); err != nil {
+		return err
+	}
+	wg.Wait()
+	return nil
+}
+
 func MessageHandler(msg mqtt.Message) error {
 	var reading *models.Reading
 	var err error
 	if reading, err = models.ConvertFromBytes(msg.Payload()); err != nil {
 		return err
 	}
-	fmt.Printf("Received final message **%s** from topic **%s**", reading.ID, msg.Topic())
+	fmt.Printf("Received final message **%s** from topic **%s**\n", reading.ID, msg.Topic())
+
+	if reading.Co > limits.CoLimit || reading.Lpg > limits.LpgLimit || reading.Smoke > limits.SmokeLimit ||
+		reading.Humidity > limits.HumidityLimit || reading.Temperature > limits.TemperatureLimit {
+		var data []byte
+		data, err = json.Marshal(reading)
+		if err != nil {
+			return fmt.Errorf("marshalling failed: %w", err)
+		}
+
+		if err = PublishReading("/limit", data); err != nil {
+			return err
+		}
+	}
 	return nil
 }

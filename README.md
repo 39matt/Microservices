@@ -19,8 +19,6 @@ A structural diagram of the system (coming soon) illustrates how containers comm
 The dataset used for simulation is sourced from [Environmental Sensor Data on Kaggle](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
 
 ---
-
-## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
 ```mermaid
 graph TB
     Data[iot_telemetry_data.csv] -->  SG
@@ -47,6 +45,7 @@ graph TB
     class PM test
 
 ```
+## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
 ### 1. Data Manager (Go)
 
 A **gRPC service** responsible for data storage and CRUD operations.

@@ -1,0 +1,98 @@
+name: "Project 2"
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-2
+    environment:
+      POSTGRES_USER: matija
+      POSTGRES_PASSWORD: matija
+      POSTGRES_DB: iotdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - iot-net-2
+      
+  datamanager:
+    build: ./DataManager
+    container_name: datamanager-2
+    ports:
+      - "8081:8080"
+    environment:
+       POSTGRES_URL: "postgres://matija:matija@postgres:5432/iotdb?sslmode=disable"
+    networks:
+      - iot-net-2
+    depends_on:
+      - postgres
+
+  gateway:
+    build: ./Gateway
+    container_name: gateway-2
+    platform: "linux/amd64"
+    ports:
+      - "5237:5236"
+    environment:
+      DATAMANAGER_HOST: "datamanager:8080"
+    networks:
+      - iot-net-2
+    depends_on:
+      - datamanager
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto-2
+    ports:
+      - "1884:1883"
+      - "9002:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - iot-net-2
+
+  eventmanager:
+    build: ./EventManager
+    container_name: eventmanager-2
+    ports:
+      - "8091:8090"
+    networks:
+      - iot-net-2
+    depends_on:
+      - mosquitto
+
+  mqtt-client:
+      build: ./mqtt-client
+      container_name: mqtt-client-2
+      ports:
+        - "3001:3000"
+      environment:
+        - NODE_ENV=production
+      networks:
+        - iot-net-2
+      depends_on:
+        - mosquitto
+
+  sensor-generator:
+    build: ./SensorGenerator
+    container_name: sensor-generator
+    stdin_open: true  
+    tty: true      
+    networks:
+      - iot-net-2
+    depends_on:
+      - gateway
+      
+networks:
+  iot-net-2:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+  mosquitto_data:
+    driver: local
+  mosquitto_log:
+    driver: local
+    

@@ -4,10 +4,51 @@ This repository contains multiple projects built as part of an **Internet of Thi
 
 Each project is containerized using **Docker Compose** and connected through a common network for seamless interoperability.
 
----
-
 ## 🧱 Overall Architecture
+```mermaid
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#7cd4fc'
+    primaryTextColor: '#000'
+    primaryBorderColor: '#333'
+    lineColor: '#666'
+    fontSize: 14px
+  layout: elk
+---
+flowchart LR
+    CSV["iot_telemetry_data.csv"] --> SG["SensorGenerator<br>Python Script"]
+    SG -- REST POST /readings --> GW["Gateway<br>.NET REST API<br>:5236"]
+    GW -- gRPC --> DM["DataManager<br>Go gRPC Server<br>:8080"]
+    DM -- SQL --> DB[("Postgres<br>iotdb.readings<br>:5432")]
+    DM -. PUBLISH /reading .-> MQTT["MQTT Broker<br>Mosquitto<br>:1883"]
+    MQTT -. SUBSCRIBE /reading .-> EM["Event Manager<br>Go MQTT Handler<br>:8090"] & AL["Analytics"]
+    EM -. PUBLISH /limit .-> MQTT
+    AL -- REST --> ML["MLaaS<br>Python FastAPI<br>:8000"]
+    AL -. PUBLISH /example .-> NATS["NATS Broker<br>Example<br>:1884"]
+    MQTT -. SUBSCRIBE /limit .-> CLIENT["MQTT &amp; NATS Client<br>NextJS<br>:3000"]
+    NATS -. SUBSCRIBE /example .-> CLIENT
+    PM["Postman/grpcurl"] -. HTTPS .-> GW
+    PM -. gRPC .-> DM
 
+     SG:::generator
+     GW:::service
+     DM:::service
+     DB:::db
+     EM:::service
+     MQTT:::broker
+     NATS:::broker
+     AL:::service
+     ML:::service
+     CLIENT:::service
+     PM:::test
+    classDef service fill:#7cd4fc,stroke:#333,stroke-width:2px,color:#000
+    classDef db fill:#a3f58e,stroke:#333,stroke-width:2px,color:#000
+    classDef broker fill:#ba52fa,stroke:#333,stroke-width:2px,color:#fff
+    classDef generator fill:#fadb52,stroke:#333,stroke-width:2px,color:#000
+    classDef test stroke:#ff9800,stroke-width:3px,stroke-dasharray: 5 5
+```
 The entire system is structured as a set of loosely coupled microservices, each responsible for a specific task:
 
 - **Data Manager:** gRPC-based data service written in Go.  
@@ -18,33 +59,7 @@ A structural diagram of the system (coming soon) illustrates how containers comm
 
 The dataset used for simulation is sourced from [Environmental Sensor Data on Kaggle](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
 
----
-```mermaid
-graph TB
-    Data[iot_telemetry_data.csv] -->  SG
-    SG[SensorGenerator<br/>IoT Data from CSV] -->|REST POST /readings| GW[Gateway<br/>.NET REST API<br/>Port 5236]
-    PM[Postman/grpcurl] -.->|HTTPS| GW
-    PM -.->|gRPC| DM
 
-    GW -->|gRPC| DM[DataManager<br/>Go gRPC Server<br/>Port 8080]
-    DM -->|database/sql| DB[(Postgres<br/>iotdb.readings<br/>Port 5432)]
-    
-    subgraph Server ["Server"]
-        GW
-        DM
-        DB
-    end
-    
-
-    
-    classDef service fill:#7cd4fc,color:white
-    classDef db fill:#ea9ff5,color:white
-    classDef test stroke:#ff9800
-    class GW,DM service
-    class DB db
-    class PM test
-
-```
 ## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
 ### 1. Data Manager (Go)
 

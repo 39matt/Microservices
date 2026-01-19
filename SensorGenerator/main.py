@@ -99,7 +99,7 @@ def read_from_csv(csvFile, limit: int = 10) -> List[Reading]:
 
     return readings
 
-def send_get_request(url: str = "http://localhost:5237", request:str = "/api/Readings/") -> List[Reading] | None:
+def send_get_request(url: str = "http://gateway:5236", request:str = "/api/Readings/") -> List[Reading] | None:
     full_url = f"{url}{request}"
     try:
         response = requests.get(full_url)
@@ -112,7 +112,7 @@ def send_get_request(url: str = "http://localhost:5237", request:str = "/api/Rea
         print(e)
     return None
 
-def send_post_request(reading: Reading, url: str = "http://localhost:5237", request:str = "/api/Readings/") -> requests.Response | None:
+def send_post_request(reading: Reading, url: str = "http://gateway:5236", request:str = "/api/Readings/") -> requests.Response | None:
     url = f"{url}{request}"
     try:
         response = requests.post(url, json=reading.as_api_dict())
@@ -127,7 +127,7 @@ def send_post_request(reading: Reading, url: str = "http://localhost:5237", requ
         print(e)
     return None
 
-def send_delete_request(url: str = "http://localhost:5237", request:str = "/api/Readings/") -> None:
+def send_delete_request(url: str = "http://gateway:5236", request:str = "/api/Readings/") -> None:
     full_url = f"{url}{request}"
     try:
         response = requests.delete(full_url)
@@ -149,19 +149,20 @@ def send_batch(readings: List[Reading]) -> int | None:
     return success_count
 
 if __name__ == "__main__":
-    readings = read_from_csv("./../Data/iot_telemetry_data.csv", 1000)
-    print(f"Loaded {len(readings)} readings")
+    while True:
+        readings = read_from_csv("./data/iot_telemetry_data.csv", 1000)
+        print(f"Loaded {len(readings)} readings")
 
-    choice = input("Input how many random readings do you want to send to the Gateway?\nEnter 'D' if you want to delete all rows.\n").strip()
+        choice = input("Input how many random readings do you want to send to the Gateway?\nEnter 'D' if you want to delete all rows.\n").strip()
 
-    if choice.upper() == 'D':
-        send_delete_request()
-        print("Successfully deleted all rows")
-    else:
-        choice = int(choice)
-        random_readings = random.sample(readings, choice)
-        send_batch(random_readings)
+        if choice.upper() == 'D':
+            send_delete_request()
+            print("Successfully deleted all rows")
+        else:
+            choice = int(choice)
+            random_readings = random.sample(readings, choice)
+            send_batch(random_readings)
 
-    existing_readings = send_get_request()
-    if existing_readings:
-        pretty_print_readings(existing_readings)
+        existing_readings = send_get_request()
+        if existing_readings:
+            pretty_print_readings(existing_readings)

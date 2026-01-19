@@ -73,6 +73,16 @@ services:
         - iot-net-2
       depends_on:
         - mosquitto
+
+  sensor-generator:
+    build: ./SensorGenerator
+    container_name: sensor-generator
+    stdin_open: true  
+    tty: true      
+    networks:
+      - iot-net-2
+    depends_on:
+      - gateway
       
 networks:
   iot-net-2:

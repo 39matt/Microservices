@@ -23,7 +23,8 @@ The dataset used for simulation is sourced from [Environmental Sensor Data on Ka
 ## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
 ```mermaid
 graph TB
-    SG[SensorGenerator<br/>IoT Data from CSV] -->|REST POST /data| GW[Gateway<br/>.NET REST API<br/>Port 5236]
+    Data[iot_telemetry_data.csv] -->  SG
+    SG[SensorGenerator<br/>IoT Data from CSV] -->|REST POST /readings| GW[Gateway<br/>.NET REST API<br/>Port 5236]
     PM[Postman/grpcurl] -.->|HTTPS| GW
     PM -.->|gRPC| DM
 
@@ -59,7 +60,7 @@ A **gRPC service** responsible for data storage and CRUD operations.
 
 An **API Gateway and frontend** that communicates with the Data Manager via gRPC.
 
-- Uses **OpenAPI** for [documentation.](https://app.swaggerhub.com/apis/elfak-695/Project1/1.0.0)  
+- Uses **OpenAPI** for [specification.](https://app.swaggerhub.com/apis/elfak-695/Project1/1.0.0)  
 - Implements **MVC architecture** for a clean separation of concerns.  
 - Provides a REST interface for clients to access sensor data.  
 - Forwards data operations to the Data Manager via gRPC calls.

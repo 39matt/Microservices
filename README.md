@@ -49,45 +49,32 @@ flowchart LR
     classDef generator fill:#fadb52,stroke:#333,stroke-width:2px,color:#000
     classDef test stroke:#ff9800,stroke-width:3px,stroke-dasharray: 5 5
 ```
+### 📚 Technologies Used
+
+| Component | Language / Framework | Key Features |
+|------------|---------------------|---------------|
+| Data Manager | Go | gRPC, MQTT, PostgreSQL, CRUD over RPC |
+| Gateway | ASP.NET Core 10 | MVC, REST + gRPC integration, OpenAPI |
+| Sensor Generator | Python | Data simulation, HTTP client |
+| Mosquitto (MQTT Broker) | Docker container | MQTT Handling |
+| Event Manager | Go | MQTT, Filtering |
+| MQTT/NATS Client | NextJS | MQTT, NATS, Data visualisation |
+| Analytics | ? | MQTT, NATS |
+| MLaaS | Python, FastAPI | TensorFlow, REST |
+| Infrastructure | Docker, Docker Compose | Containerization, orchestration |
+
 The entire system is structured as a set of loosely coupled microservices, each responsible for a specific task:
 
-- **Data Manager:** gRPC-based data service written in Go.  
-- **Gateway:** ASP.NET Core MVC application that acts as an API gateway.  
-- **Sensor Generator:** Python script that simulates IoT sensor data.  
-
-A structural diagram of the system (coming soon) illustrates how containers communicate using both HTTP and gRPC protocols.
+ - **Data Manager:** gRPC-based data service written in Go that persists IoT readings to PostgreSQL and publishes them to MQTT
+ - **Gateway:** ASP.NET Core MVC application that acts as an API gateway with REST endpoints and gRPC client
+ - **Sensor Generator:** Python script that simulates IoT sensor data by reading from CSV and posting to Gateway
+ - **Event Manager:** Go-based MQTT handler that subscribes to sensor readings, detects threshold violations, and publishes alerts
+ - **Analytics:** Microservice that consumes MQTT sensor data, invokes MLaaS for predictions, and publishes results to NATS
+ - **MLaaS:** Python FastAPI service providing REST endpoints for machine learning inference on time series sensor data
+ - **MQTT/NATS Client:** NextJS web application for real-time monitoring of events and ML predictions
 
 The dataset used for simulation is sourced from [Environmental Sensor Data on Kaggle](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
 
-
-## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
-### 1. Data Manager (Go)
-
-A **gRPC service** responsible for data storage and CRUD operations.
-
-- Connects to **PostgreSQL**.
-- Exposes methods over **gRPC** (runs on HTTP/2).
-- Listens on a TCP port to handle remote procedure calls from other services.
-- Implements protobuf definitions for data models and RPC methods.
-
-### 2. Gateway (ASP.NET Core 10 MVC)
-
-An **API Gateway and frontend** that communicates with the Data Manager via gRPC.
-
-- Uses **OpenAPI** for [specification.](https://app.swaggerhub.com/apis/elfak-695/Project1/1.0.0)  
-- Implements **MVC architecture** for a clean separation of concerns.  
-- Provides a REST interface for clients to access sensor data.  
-- Forwards data operations to the Data Manager via gRPC calls.
-
-### 3. Sensor Generator (Python)
-
-A lightweight **data simulator** that mimics IoT devices by sending sensor readings.
-
-- Reads environmental data from the Kaggle CSV file.  
-- Randomly selects rows and sends HTTP requests to the Gateway API.  
-- Designed for testing and system load simulation.
-
----
 
 ## 🐳 Docker Setup
 
@@ -122,22 +109,60 @@ docker-compose down
 
 ---
 
-## 📈 Future Projects
+## 📦 Project 1 – Environmental Data System (Gateway, DataManager and Database)
+### 1. Data Manager (Go)
 
-### Project 2 – MQTT
-Addition of MQTT protocol using Mosquitto.
-[AsyncAPI Specification](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/39matt/Microservices/refs/heads/main/DataManager/asyncapi.txt)
+A **gRPC service** responsible for data storage and CRUD operations.
 
-### Project 3 – TBD
-_(Potential service for notification, ML predictions, or sensor anomaly detection)_
+- Connects to **PostgreSQL**.
+- Exposes methods over **gRPC** (runs on HTTP/2).
+- Listens on a TCP port to handle remote procedure calls from other services.
+- Implements protobuf definitions for data models and RPC methods.
+
+### 2. Gateway (ASP.NET Core 10 MVC)
+
+An **API Gateway and frontend** that communicates with the Data Manager via gRPC.
+
+- Uses **OpenAPI** for [specification.](https://app.swaggerhub.com/apis/elfak-695/Project1/1.0.0)  
+- Implements **MVC architecture** for a clean separation of concerns.  
+- Provides a REST interface for clients to access sensor data.  
+- Forwards data operations to the Data Manager via gRPC calls.
+
+### 3. Sensor Generator (Python)
+
+A lightweight **data simulator** that mimics IoT devices by sending sensor readings.
+
+- Reads environmental data from the Kaggle CSV file.  
+- Randomly selects rows and sends HTTP requests to the Gateway API.  
+- Designed for testing and system load simulation.
 
 ---
 
-## 📚 Technologies Used
+## Project 2 – MQTT
 
-| Component | Language / Framework | Key Features |
-|------------|---------------------|---------------|
-| Data Manager | Go | gRPC, PostgreSQL, CRUD over RPC |
-| Gateway | ASP.NET Core 10 | MVC, REST + gRPC integration, OpenAPI |
-| Sensor Generator | Python | Data simulation, HTTP client |
-| Infrastructure | Docker, Docker Compose | Containerization, orchestration |
+### Mosquitto (MQTT Broker)
+[AsyncAPI Specification](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/39matt/Microservices/refs/heads/main/DataManager/asyncapi.txt)
+
+Container started and bound to ports :1884 for TCP and :9001 for WebSockets with [config](https://github.com/39matt/Microservices/blob/main/mosquitto.conf).
+
+Existing topics:
+1. **/reading** - all readings
+    - Publishers: DataManager
+    - Subscribers: EventManager, Analytics
+2. **/limit** - readings going over limits (CO, Smoke,...)
+    - Publishers: EventManager
+    - Subscribers: MQTT/NATS Client
+
+### Event Manager
+[AsyncAPI Specification](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/39matt/Microservices/refs/heads/main/EventManager/asyncapi.txt)
+
+Subscribed to **/readings** topic, filters all incoming readings and sends ones going over limit to the **/limits** topic.
+
+### MQTT Client
+
+Subscribed to **/limits** topic and displays all readings that went over the limit.
+
+## Project 3 – ML Analytics
+
+### Analytics
+

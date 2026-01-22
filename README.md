@@ -59,8 +59,8 @@ flowchart LR
 | Mosquitto (MQTT Broker) | Docker container | MQTT Handling |
 | Event Manager | Go | MQTT, Filtering |
 | MQTT/NATS Client | NextJS | MQTT, NATS, Data visualisation |
-| Analytics | ? | MQTT, NATS |
-| MLaaS | Python, FastAPI | TensorFlow, REST |
+| Analytics | Go | MQTT, NATS |
+| MLaaS | Python, FastAPI | scikit-learn, REST |
 | Infrastructure | Docker, Docker Compose | Containerization, orchestration |
 
 The entire system is structured as a set of loosely coupled microservices, each responsible for a specific task:
@@ -97,9 +97,23 @@ This command will:
 - Create a shared Docker network for service communication.
 - Expose ports as configured inside `docker-compose.yml`.
 
-Once started:
-- Gateway should be available at: [**http://localhost:5237**](http://localhost:5237)
-- Data Manager runs internally and communicates via gRPC.
+Once all services start successfully with `docker-compose up --build`, access the exposed endpoints as listed below based on the Project 3 docker-compose.yml configuration.
+
+### Accessible Services
+- Gateway REST API at: [[**http://localhost:5237**](http://localhost:5237)](http://localhost:5237)
+- MQTT/NATS Client UI at: [[**http://localhost:3001**](http://localhost:3001)](http://localhost:3001)
+- MLaaS REST API at: [[**http://localhost:8101**](http://localhost:8101)](http://localhost:8101)
+- Analytics service at: [[**http://localhost:8111**](http://localhost:8111)](http://localhost:8111)
+- Event Manager at: [[**http://localhost:8091**](http://localhost:8091)](http://localhost:8091)
+
+### Internal Services
+- Data Manager communicates via gRPC at: `localhost:8081`
+- Postgres database at: `localhost:5433`
+- Mosquitto MQTT Broker at: `localhost:1884` (TCP) / `localhost:9002` (WebSocket)
+- NATS Broker at: `localhost:4223` (client) / `localhost:8223` (monitoring)
+
+Sensor Generator runs interactively without exposed ports; exec into its container for logs (`docker exec -it sensor-generator-3 bash`).
+
 
 To stop containers:
 
@@ -163,6 +177,27 @@ Subscribed to **/readings** topic, filters all incoming readings and sends ones 
 Subscribed to **/limits** topic and displays all readings that went over the limit.
 
 ## Project 3 – ML Analytics
+### Analytics (Go)
+[AsyncAPI Specification](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/39matt/Microservices/refs/heads/main/Analytics/asyncapi.txt)
 
-### Analytics
+A **microservice** that subscribes to MQTT sensor readings topic (/reading), processes data by invoking MLaaS REST endpoints for machine learning predictions on environmental time series, and publishes results to NATS topic (predictions).
 
+- Consumes real-time data from Mosquitto MQTT broker.
+- Performs analytics and forwards to the NATS broker.
+
+
+### MLaaS (Python FastAPI)
+
+A **Machine Learning as a Service** providing REST API for inference on sensor data streams using scikit-learn models for a 5h prediction.
+
+- Trained/validated models deployed via FastAPI and Docker.
+- Exposes endpoints like /predict for time series data.
+- ML model predicts temperatures for the upcoming 5h
+
+### MQTT/NATS Client (NextJS)
+
+An **upgraded web client** from Project 2 MQTT app, now subscribing to both MQTT /limit (alerts) and NATS predictions topics for real-time visualization of threshold violations and analytics results.
+
+- Displays interactive dashboards for events and ML inferences.
+- Connects via WebSockets for live updates.
+- Accessible at [[**http://localhost:3001**](http://localhost:3001)](http://localhost:3001).

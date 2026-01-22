@@ -1,0 +1,120 @@
+asyncapi: 3.0.0
+info:
+  title: Analytics Microservice - IoT ML Predictions
+  version: '1.0.0'
+  description: |
+    MQTT subscriber service that processes environmental sensor telemetry, invokes MLaaS for temperature predictions, and publishes via NATS.
+    ### Features:
+    * Subscribes to /reading topic for real-time IoT data (CO, humidity, temperature, etc.)
+    * Calls MLaaS REST for ML predictions on temperature time series
+    * Publishes predictions array to /predictions NATS topic
+
+servers:
+  mqtt:
+    host: 'localhost:{port}'
+    protocol: mqtt
+    description: MQTT broker (Mosquitto)
+    variables:
+      port:
+        default: '1884'
+  nats:
+    host: 'localhost:{port}'
+    protocol: nats
+    description: NATS broker
+    variables:
+      port:
+        default: '4223'
+
+channels:
+  reading:
+    address: 'reading'
+    messages:
+      sensorReading:
+        $ref: '#/components/messages/SensorReading'
+  predictions:
+    address: 'predictions'
+    messages:
+      mlPrediction:
+        $ref: '#/components/messages/MLPrediction'
+
+operations:
+  subscribeToReadings:
+    action: 'receive'
+    summary: Receive sensor readings from DataManager via MQTT.
+    channel:
+      $ref: '#/channels/reading'
+    traits:
+      - $ref: '#/components/operationTraits/mqttSubscription'
+  publishPredictions:
+    action: 'send'
+    summary: Publish ML temperature predictions to NATS.
+    channel:
+      $ref: '#/channels/predictions'
+    traits:
+      - $ref: '#/components/operationTraits/natsPublish'
+
+components:
+  messages:
+    SensorReading:
+      name: SensorReading
+      summary: Environmental sensor telemetry data from MQTT /reading.
+      payload:
+        $ref: '#/components/schemas/SensorReading'
+    MLPrediction:
+      name: MLPrediction
+      summary: Array of temperature predictions from MLaaS.
+      payload:
+        $ref: '#/components/schemas/MLPrediction'
+
+  schemas:
+    SensorReading:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        deviceId:
+          type: string
+        co:
+          type: number
+        humidity:
+          type: number
+        light:
+          type: boolean
+        lpg:
+          type: number
+        motion:
+          type: boolean
+        smoke:
+          type: number
+        temperature:
+          type: number
+      required:
+        - timestamp
+        - deviceId
+        - co
+        - humidity
+        - temperature
+    MLPrediction:
+      type: array
+      items:
+        type: object
+        properties:
+          predictedTemp:
+            type: number
+            description: Predicted future temperature
+          timestamp:
+            type: string
+            format: date-time
+      minItems: 1
+
+  operationTraits:
+    mqttSubscription:
+      bindings:
+        mqtt:
+          qos: 1
+    natsPublish:
+      bindings:
+        nats: {}

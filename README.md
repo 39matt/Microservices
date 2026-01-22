@@ -80,7 +80,7 @@ The dataset used for simulation is sourced from [Environmental Sensor Data on Ka
 
 All services are containerized and orchestrated using **Docker Compose**.
 
-- Each component (Gateway, Data Manager, PostgreSQL) runs in its own container.
+- Each component runs in its own container.
 - Shared network **iot-net** enables cross-service communication.
 - Environment variables handle ports, credentials, and connection strings.
 
@@ -93,7 +93,7 @@ docker-compose up --build
 ```
 
 This command will:
-- Build and start the **PostgreSQL**, **Data Manager**, **Gateway**, and containers.
+- Build and start all containers.
 - Create a shared Docker network for service communication.
 - Expose ports as configured inside `docker-compose.yml`.
 

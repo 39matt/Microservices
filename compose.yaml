@@ -2,7 +2,7 @@ name: "Project 3"
 services:
   postgres:
     image: postgres:16
-    container_name: postgres-2
+    container_name: postgres-3
     environment:
       POSTGRES_USER: matija
       POSTGRES_PASSWORD: matija
@@ -12,36 +12,36 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - iot-net-2
+      - iot-net-3
       
   datamanager:
     build: ./DataManager
-    container_name: datamanager-2
+    container_name: datamanager-3
     ports:
       - "8081:8080"
     environment:
        POSTGRES_URL: "postgres://matija:matija@postgres:5432/iotdb?sslmode=disable"
     networks:
-      - iot-net-2
+      - iot-net-3
     depends_on:
       - postgres
 
   gateway:
     build: ./Gateway
-    container_name: gateway-2
+    container_name: gateway-3
     platform: "linux/amd64"
     ports:
       - "5237:5236"
     environment:
       DATAMANAGER_HOST: "datamanager:8080"
     networks:
-      - iot-net-2
+      - iot-net-3
     depends_on:
       - datamanager
 
   mosquitto:
     image: eclipse-mosquitto:latest
-    container_name: mosquitto-2
+    container_name: mosquitto-3
     ports:
       - "1884:1883"
       - "9002:9001"
@@ -50,42 +50,74 @@ services:
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
     networks:
-      - iot-net-2
+      - iot-net-3
 
   eventmanager:
     build: ./EventManager
-    container_name: eventmanager-2
+    container_name: eventmanager-3
     ports:
       - "8091:8090"
     networks:
-      - iot-net-2
+      - iot-net-3
     depends_on:
       - mosquitto
 
-  mqtt-client:
+  mqtt-nats-client:
       build: ./mqtt-client
-      container_name: mqtt-client-2
+      container_name: mqtt-client-3
       ports:
         - "3001:3000"
       environment:
         - NODE_ENV=production
       networks:
-        - iot-net-2
+        - iot-net-3
       depends_on:
         - mosquitto
 
   sensor-generator:
     build: ./SensorGenerator
-    container_name: sensor-generator
+    container_name: sensor-generator-3
     stdin_open: true  
     tty: true      
     networks:
-      - iot-net-2
+      - iot-net-3
     depends_on:
       - gateway
+    
+  mlaas:
+    build: ./MLaaS
+    container_name: mlaas-3
+    ports:
+      - "8101:8100"
+    networks:
+      - iot-net-3
+
+  nats:
+    container_name: nats-3
+    image: nats:latest
+    ports: 
+      - "8223:8222"
+      - "4223:4222"
+    networks: 
+      - iot-net-3
+
+  analytics:
+    build: 
+      context: ./Analytics
+      args:
+        TARGETPLATFORM: linux/arm64  
+    container_name: analytics-3
+    ports:
+      - "8111:8110"
+    networks:
+      - iot-net-3
+    depends_on:
+      - nats
+      - mlaas
+      - mosquitto
       
 networks:
-  iot-net-2:
+  iot-net-3:
     driver: bridge
 
 volumes:

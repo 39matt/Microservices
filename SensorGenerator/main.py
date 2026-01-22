@@ -145,24 +145,35 @@ def send_batch(readings: List[Reading]) -> int | None:
         if send_post_request(reading):
             success_count += 1
 
-    print(f"✅ Sent {success_count}/{len(readings)} readings")
+    print(f"Sent {success_count}/{len(readings)} readings")
     return success_count
+
 
 if __name__ == "__main__":
     while True:
         readings = read_from_csv("./data/iot_telemetry_data.csv", 1000)
         print(f"Loaded {len(readings)} readings")
 
-        choice = input("Input how many random readings do you want to send to the Gateway?\nEnter 'D' if you want to delete all rows.\n").strip()
+        while True:
+            choice = input(
+                "Input how many random readings to send to Gateway (less than loaded) or 'D' to delete all: ").strip().upper()
 
-        if choice.upper() == 'D':
-            send_delete_request()
-            print("Successfully deleted all rows")
-        else:
-            choice = int(choice)
-            random_readings = random.sample(readings, choice)
-            send_batch(random_readings)
+            if choice == 'D':
+                send_delete_request()
+                print("Successfully deleted all rows")
+            try:
+                num = int(choice)
+                if 1 <= num <= len(readings):
+                    # random_readings = random.sample(readings, num)
+                    send_batch(readings[:num])
+                    print(f"Sent {num} random readings")
+                    break
+                else:
+                    print(f"Number must be 1-{len(readings)}, try again")
+            except ValueError:
+                print("Invalid input, enter number or 'D'")
 
         existing_readings = send_get_request()
         if existing_readings:
             pretty_print_readings(existing_readings)
+        print("-" * 50)

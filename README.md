@@ -100,11 +100,11 @@ This command will:
 Once all services start successfully with `docker-compose up --build`, access the exposed endpoints as listed below based on the Project 3 docker-compose.yml configuration.
 
 ### Accessible Services
-- Gateway REST API at: [[**http://localhost:5237**](http://localhost:5237)](http://localhost:5237)
-- MQTT/NATS Client UI at: [[**http://localhost:3001**](http://localhost:3001)](http://localhost:3001)
-- MLaaS REST API at: [[**http://localhost:8101**](http://localhost:8101)](http://localhost:8101)
-- Analytics service at: [[**http://localhost:8111**](http://localhost:8111)](http://localhost:8111)
-- Event Manager at: [[**http://localhost:8091**](http://localhost:8091)](http://localhost:8091)
+- Gateway REST API at: [**http://localhost:5237**](http://localhost:5237)
+- MQTT/NATS Client UI at: [**http://localhost:3001**](http://localhost:3001)
+- MLaaS REST API at: [**http://localhost:8101**](http://localhost:8101)
+- Analytics service at: [**http://localhost:8111**](http://localhost:8111)
+- Event Manager at: [**http://localhost:8091**](http://localhost:8091)
 
 ### Internal Services
 - Data Manager communicates via gRPC at: `localhost:8081`
@@ -200,4 +200,4 @@ An **upgraded web client** from Project 2 MQTT app, now subscribing to both MQTT
 
 - Displays interactive dashboards for events and ML inferences.
 - Connects via WebSockets for live updates.
-- Accessible at [[**http://localhost:3001**](http://localhost:3001)](http://localhost:3001).
+- Accessible at [**http://localhost:3001**](http://localhost:3001).
